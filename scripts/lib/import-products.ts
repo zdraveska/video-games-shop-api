@@ -9,6 +9,7 @@ import {
   getOrCreateTaxCategory,
 } from "./utils.js";
 import { ProductInput } from "../../src/types.js";
+import { APIError } from "../../src/errors/api-error.js";
 
 const productsPath = path.resolve("scripts/data/products.json");
 const productsData = JSON.parse(fs.readFileSync(productsPath, "utf-8"));
@@ -81,9 +82,9 @@ export async function importProducts() {
 
       console.log(`Created product: ${product.key}`);
     } catch (err: any) {
-      console.error(
-        `Failed to create product "${product.key}":`,
-        err.body || err
+      throw new APIError(
+        `Failed to create product "${product.key}": ${err.message || err}`,
+        500
       );
     }
   }

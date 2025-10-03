@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { Category } from "@commercetools/platform-sdk";
+import { APIError } from "../../src/errors/api-error.js";
 
 const categoriesPath = path.resolve("scripts/data/categories.json");
 const categoriesData = JSON.parse(fs.readFileSync(categoriesPath, "utf-8"));
@@ -22,11 +23,10 @@ export async function createCategory(
       console.log(`Category already exists: ${category.key}`);
       return null;
     }
-    console.error(
-      `Failed to create category: ${category.key}`,
-      err.body || err
+    throw new APIError(
+      `Failed to create category: ${category.key}: ${err.message || err}`,
+      500
     );
-    return null;
   }
 }
 
