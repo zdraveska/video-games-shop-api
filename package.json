@@ -1,0 +1,47 @@
+{
+  "name": "video-games-shop-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Video games e-shop API built with Node.js, GraphQL and Commercetools.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --loader ts-node/esm --watch src/graphql/server.ts",
+    "start": "node --loader ts-node/esm src/graphql/server.ts",
+    "import:categories": "node --loader ts-node/esm scripts/categories/import-categories.ts",
+    "fetch:categories": "node --loader ts-node/esm scripts/categories/fetch-categories.ts",
+    "delete:categories": "node --loader ts-node/esm scripts/categories/delete-categories.ts -- --confirm",
+    "import:products": "node --loader ts-node/esm scripts/products/import-products.ts",
+    "fetch:products": "node --loader ts-node/esm scripts/products/fetch-products.ts",
+    "delete:products": "node --loader ts-node/esm scripts/products/delete-products.ts -- --confirm"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.0.0",
+    "@commercetools/platform-sdk": "^8.16.0",
+    "@commercetools/sdk-client": "^4.0.1",
+    "@commercetools/sdk-client-v2": "^3.0.0",
+    "@commercetools/sdk-middleware-auth": "^8.0.1",
+    "@commercetools/sdk-middleware-http": "^8.0.1",
+    "@commercetools/ts-client": "^4.2.1",
+    "dotenv": "^17.2.3",
+    "graphql": "^16.11.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^24.5.2",
+    "@types/node-fetch": "^2.6.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zdraveska/video-games-shop-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zdraveska/video-games-shop-api/issues"
+  },
+  "homepage": "https://github.com/zdraveska/video-games-shop-api#readme"
+}
