@@ -1,6 +1,7 @@
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { Category } from "@commercetools/platform-sdk";
 import { fetchAllCategories } from "./utils.js";
+import { APIError } from "../../src/errors/api-error.js";
 
 // Delete a single category
 async function deleteCategory(cat: Category) {
@@ -24,8 +25,10 @@ async function deleteCategory(cat: Category) {
     ) {
       return false;
     }
-    console.error(`Failed to delete ${cat.key ?? cat.id}:`, err.body || err);
-    return false;
+    throw new APIError(
+      `Failed to delete category ${cat.key ?? cat.id}:${err.message || err}`,
+      500
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import { ProductType } from "@commercetools/platform-sdk";
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
+import { APIError } from "../../src/errors/api-error.js";
 
 export async function deleteAllProductTypes({ confirm = false } = {}) {
   // Fetch all product types
@@ -27,18 +28,20 @@ export async function deleteAllProductTypes({ confirm = false } = {}) {
 
   // Delete product types
   let deletedCount = 0;
-  for (const pt of productTypes) {
+  for (const productType of productTypes) {
     try {
       await ctClient.execute({
         method: "DELETE",
-        uri: `/${projectKey}/product-types/${pt.id}?version=${pt.version}`,
+        uri: `/${projectKey}/product-types/${productType.id}?version=${productType.version}`,
       });
-      console.log(`Deleted product type: ${pt.key}`);
+      console.log(`Deleted product type: ${productType.key}`);
       deletedCount++;
     } catch (err: any) {
-      console.error(
-        `Failed to delete product type ${pt.key}:`,
-        err.body || err
+      throw new APIError(
+        `Failed to delete product type: ${productType.key}: ${
+          err.message || err
+        }`,
+        500
       );
     }
   }

@@ -1,4 +1,11 @@
-import dotenv from "dotenv";
+import {
+  CT_PROJECT_KEY,
+  CT_CLIENT_ID,
+  CT_CLIENT_SECRET,
+  CT_SCOPES,
+  CT_API_URL,
+  CT_AUTH_URL,
+} from "../config.js";
 import fetch from "node-fetch";
 import {
   ClientBuilder,
@@ -6,32 +13,22 @@ import {
   createHttpMiddleware,
 } from "@commercetools/ts-client";
 
-dotenv.config();
-
-const projectKey = process.env.CT_PROJECT_KEY!;
-const clientId = process.env.CT_CLIENT_ID!;
-const clientSecret = process.env.CT_CLIENT_SECRET!;
-const scopes = (process.env.CT_SCOPES || "").split(" ");
-const apiUrl = process.env.CT_API_URL!;
-const authUrl = process.env.CT_AUTH_URL!;
-
-if (!projectKey || !clientId || !clientSecret || !apiUrl || !authUrl) {
-  throw new Error("Missing required commercetools environment variables.");
-}
+const projectKey = CT_PROJECT_KEY;
+const scopes = CT_SCOPES.split(" ");
 
 const ctClient = new ClientBuilder()
   .withMiddleware(
     createAuthMiddlewareForClientCredentialsFlow({
-      host: authUrl,
+      host: CT_AUTH_URL,
       projectKey,
-      credentials: { clientId, clientSecret },
+      credentials: { clientId: CT_CLIENT_ID, clientSecret: CT_CLIENT_SECRET },
       scopes,
       httpClient: fetch,
     })
   )
   .withMiddleware(
     createHttpMiddleware({
-      host: apiUrl,
+      host: CT_API_URL,
       httpClient: fetch,
     })
   )

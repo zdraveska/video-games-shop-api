@@ -1,6 +1,7 @@
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { Category, TaxCategory } from "@commercetools/platform-sdk";
 import { ProductAttribute } from "../../src/types.js";
+import { APIError } from "../../src/errors/api-error.js";
 
 export async function getProductTypeIdByKey(key: string) {
   const res = await ctClient.execute({
@@ -8,7 +9,7 @@ export async function getProductTypeIdByKey(key: string) {
     uri: `/${projectKey}/product-types?where=key="${key}"`,
   });
   if (res.body.results.length > 0) return res.body.results[0].id;
-  throw new Error("Product type not found");
+  throw new APIError(`Product type: ${key} not found.`, 404);
 }
 
 export async function getTaxCategoryIdByKey(key: string) {
@@ -17,7 +18,7 @@ export async function getTaxCategoryIdByKey(key: string) {
     uri: `/${projectKey}/tax-categories?where=key="${key}"`,
   });
   if (res.body.results.length > 0) return res.body.results[0].id;
-  throw new Error("Tax category not found");
+  throw new APIError(`Tax category: ${key} not found.`, 404);
 }
 
 export async function getCategoryIdByKey(key: string) {
@@ -26,7 +27,7 @@ export async function getCategoryIdByKey(key: string) {
     uri: `/${projectKey}/categories?where=key="${key}"`,
   });
   if (res.body.results.length > 0) return res.body.results[0].id;
-  throw new Error("Category not found for key: " + key);
+  throw new APIError(`Category: ${key} not found.`, 404);
 }
 
 export async function fetchAllCategories(): Promise<Category[]> {

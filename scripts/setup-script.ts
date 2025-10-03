@@ -4,6 +4,7 @@ import { importCategories } from "./lib/import-categories.js";
 import { importProductsType } from "./lib/import-products-type.js";
 import { importProducts } from "./lib/import-products.js";
 import { deleteAllProductTypes } from "./lib/delete-product-types.js";
+import { APIError } from "../src/errors/api-error.js";
 
 async function main() {
   console.log("Starting full setup. of categories and products..\n");
@@ -32,9 +33,11 @@ async function main() {
     console.log("Products imported successfully\n");
 
     console.log('Full setup complete! You can now run "npm run dev".');
-  } catch (error) {
-    console.error("Setup failed:", error);
-    process.exit(1);
+  } catch (err: any) {
+    throw new APIError(
+      `Failed to finish the setup: ${err.message || err}`,
+      500
+    );
   }
 }
 

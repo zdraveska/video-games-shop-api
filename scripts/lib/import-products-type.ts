@@ -1,5 +1,6 @@
 import { ProductType } from "@commercetools/platform-sdk";
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
+import { APIError } from "../../src/errors/api-error.js";
 
 // --- CREATE PRODUCT TYPE ---
 const productTypeKey = "video-game";
@@ -47,10 +48,11 @@ export async function importProductsType(
       console.log(`Product type already exists: ${productType.key}`);
       return null;
     }
-    console.error(
-      `Failed to create product type: ${productType.key}`,
-      err.body || err
+    throw new APIError(
+      `Failed to create product type: ${productType.key}: ${
+        err.message || err
+      }`,
+      500
     );
-    return null;
   }
 }
