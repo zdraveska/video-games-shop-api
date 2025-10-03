@@ -10,6 +10,6 @@
   },
   "ts-node": {
     "esm": true,
-    "swc": true
+    "swc": false
   }
 }
