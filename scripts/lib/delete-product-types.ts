@@ -1,4 +1,5 @@
 import { ProductType } from "@commercetools/platform-sdk";
+
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { APIError } from "../../src/errors/api-error.js";
 

@@ -158,7 +158,11 @@ export const resolvers = {
               },
             };
           } catch (error) {
-            return { id: catRef.id, name: { en_US: null } };
+            console.warn(`Failed to fetch category ${catRef?.id}:`, error);
+            return {
+              id: catRef?.id ?? null,
+              name: { en_US: null },
+            };
           }
         })
       );

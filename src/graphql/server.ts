@@ -1,10 +1,13 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { typeDefs } from "./schema.js";
-import { resolvers } from "./resolvers.js";
+import { GraphQLError } from "graphql";
+
 import { PORT } from "../config.js";
 import { APIError } from "../errors/api-error.js";
-import { GraphQLError } from "graphql";
+
+import { typeDefs } from "./schema.js";
+import { resolvers } from "./resolvers.js";
+
 
 const server = new ApolloServer({
   typeDefs,

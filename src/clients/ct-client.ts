@@ -1,3 +1,10 @@
+import fetch from "node-fetch";
+import {
+  ClientBuilder,
+  createAuthMiddlewareForClientCredentialsFlow,
+  createHttpMiddleware,
+} from "@commercetools/ts-client";
+
 import {
   CT_PROJECT_KEY,
   CT_CLIENT_ID,
@@ -6,12 +13,6 @@ import {
   CT_API_URL,
   CT_AUTH_URL,
 } from "../config.js";
-import fetch from "node-fetch";
-import {
-  ClientBuilder,
-  createAuthMiddlewareForClientCredentialsFlow,
-  createHttpMiddleware,
-} from "@commercetools/ts-client";
 
 const projectKey = CT_PROJECT_KEY;
 const scopes = CT_SCOPES.split(" ");

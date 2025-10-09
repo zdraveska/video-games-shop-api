@@ -1,6 +1,10 @@
 import fs from "fs";
 import path from "path";
+
 import { ctClient, projectKey } from "../../src/clients/ct-client.js";
+import { ProductInput } from "../../src/types.js";
+import { APIError } from "../../src/errors/api-error.js";
+
 import {
   getProductTypeIdByKey,
   getTaxCategoryIdByKey,
@@ -8,8 +12,6 @@ import {
   processAttributes,
   getOrCreateTaxCategory,
 } from "./utils.js";
-import { ProductInput } from "../../src/types.js";
-import { APIError } from "../../src/errors/api-error.js";
 
 const productsPath = path.resolve("scripts/data/products.json");
 const productsData = JSON.parse(fs.readFileSync(productsPath, "utf-8"));

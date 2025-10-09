@@ -1,10 +1,11 @@
+import { APIError } from "../src/errors/api-error.js";
+
 import { deleteAllProducts } from "./lib/delete-products.js";
 import { deleteAllCategories } from "./lib/delete-categories.js";
 import { importCategories } from "./lib/import-categories.js";
 import { importProductsType } from "./lib/import-products-type.js";
 import { importProducts } from "./lib/import-products.js";
 import { deleteAllProductTypes } from "./lib/delete-product-types.js";
-import { APIError } from "../src/errors/api-error.js";
 
 async function main() {
   console.log("Starting full setup. of categories and products..\n");

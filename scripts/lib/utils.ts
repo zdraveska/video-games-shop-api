@@ -1,5 +1,6 @@
-import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { Category, TaxCategory } from "@commercetools/platform-sdk";
+
+import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { ProductAttribute } from "../../src/types.js";
 import { APIError } from "../../src/errors/api-error.js";
 
