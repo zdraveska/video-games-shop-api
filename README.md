@@ -91,7 +91,15 @@ and if needed, this will automatically fix lint errors:
 npm run lint:fix
 ```
 
-### 6. Run the server
+### 6. Run tests
+
+Run all Jest tests with:
+
+```bash
+npm run test
+```
+
+### 7. Run the server
 
 ```bash
 npm run start
@@ -104,146 +112,6 @@ npm run dev
 ```
 
 The GraphQL API will be available at `http://localhost:4000/graphql`
-
-## API Documentation
-
-### Available Queries
-
-#### 1. Get all products
-
-```graphql
-query {
-  products(limit: 10, offset: 0) {
-    total
-    offset
-    limit
-    results {
-      id
-      key
-      name
-      description
-      slug
-      price
-      images
-      categories {
-        id
-        name
-        key
-      }
-      attributes {
-        name
-        value
-      }
-    }
-  }
-}
-```
-
-#### 2. Get product by ID
-
-```graphql
-query {
-  product(id: "your-product-id") {
-    id
-    key
-    name
-    description
-    price
-    images
-    categories {
-      name
-      key
-    }
-  }
-}
-```
-
-#### 3. Search products by name or description
-
-```graphql
-query {
-  products(search: "zelda", limit: 10) {
-    total
-    results {
-      id
-      name
-      description
-      price
-    }
-  }
-}
-```
-
-#### 4. Filter products by category
-
-```graphql
-query {
-  products(categoryKey: "rpg", limit: 10) {
-    total
-    results {
-      id
-      name
-      price
-      categories {
-        name
-      }
-    }
-  }
-}
-```
-
-#### 5. Sort products by name
-
-```graphql
-query {
-  products(sortBy: NAME, sortOrder: ASC, limit: 10) {
-    results {
-      id
-      name
-      price
-    }
-  }
-}
-```
-
-#### 6. Sort products by price
-
-```graphql
-query {
-  products(sortBy: PRICE, sortOrder: DESC, limit: 10) {
-    results {
-      id
-      name
-      price
-    }
-  }
-}
-```
-
-#### 7. Combined query (search + filter + sort)
-
-```graphql
-query {
-  products(
-    search: "action"
-    categoryKey: "shooter"
-    sortBy: PRICE
-    sortOrder: ASC
-    limit: 5
-  ) {
-    total
-    results {
-      id
-      name
-      description
-      price
-      categories {
-        name
-      }
-    }
-  }
-}
-```
 
 ## Project Structure
 
@@ -300,7 +168,7 @@ Each video game product includes:
   - `name` - Game title
   - `description` - Game description
   - `price` - Price in cents (e.g., 5999 = $59.99)
-  - `images` - Array of cover image URLs
+  - `images` - cover image URLs
   - `categories` - Genre and platform categories
 
 - **Optional:**
@@ -324,87 +192,151 @@ This provides an interactive GraphQL playground where you can:
 - View documentation
 - Test API endpoints
 
-## Troubleshooting
+### Available Queries
 
-### "Authentication failed" error
-
-**Solution:** Check your `.env` file and ensure:
-
-- `CT_CLIENT_ID` and `CT_CLIENT_SECRET` are correct
-- `CT_SCOPES` includes `manage_project:YOUR_PROJECT_KEY`
-- API URLs match your Commercetools region
-
-### "Product type not found" during setup
-
-**Solution:** Run setup again (will do a cleanup prior to importing data)
-
-```bash
-npm run setup
-```
-
-### Port 4000 already in use
-
-**Solution:** Change the port in `.env`:
-
-```env
-PORT=4001
-```
-
-### TypeScript compilation errors
-
-**Solution:** Make sure `tsconfig.json` exists (not `ts-config.json`) and run:
-
-```bash
-npm install
-npm run build
-```
-
-## API Examples
-
-### Example 1: Get all RPG games sorted by price
+#### 1. Get all products
 
 ```graphql
 query {
-  products(categoryKey: "rpg", sortBy: PRICE, sortOrder: ASC) {
+  products(limit: 10, offset: 0) {
     total
     results {
-      name
-      price
-      images
-    }
-  }
-}
-```
-
-### Example 2: Search for Zelda games
-
-```graphql
-query {
-  products(search: "zelda") {
-    total
-    results {
-      name
-      description
-      price
+      id
+      name {
+        en_US
+      }
       categories {
-        name
+        id
+        name {
+          en_US
+        }
+      }
+      masterVariant {
+        prices {
+          value {
+            currencyCode
+            centAmount
+            amount
+          }
+        }
       }
     }
   }
 }
 ```
 
-### Example 3: Get PlayStation 5 shooters
+#### 2. Get product by ID
 
 ```graphql
 query {
-  products(categoryKey: "ps5", search: "shooter") {
+  product(id: "your-product-id") {
+    id
+    key
+    name {
+      en_US
+    }
+    description {
+      en_US
+    }
+    categories {
+      id
+      name {
+        en_US
+      }
+    }
+    masterVariant {
+      sku
+      prices {
+        value {
+          currencyCode
+          centAmount
+          amount
+        }
+      }
+      images {
+        url
+        label
+      }
+    }
+  }
+}
+```
+
+#### 3. Search products by name or description
+
+```graphql
+query {
+  products(search: "zelda", limit: 10) {
+    total
     results {
-      name
-      price
-      attributes {
-        name
-        value
+      id
+      name {
+        en_US
+      }
+      description {
+        en_US
+      }
+    }
+  }
+}
+```
+
+#### 4. Filter products by category
+
+```graphql
+query {
+  products(categoryKey: "rpg", limit: 10) {
+    total
+    results {
+      id
+      name {
+        en_US
+      }
+      categories {
+        id
+        name {
+          en_US
+        }
+      }
+    }
+  }
+}
+```
+
+#### 5. Sort products by name
+
+```graphql
+query {
+  products(sortBy: NAME, sortOrder: ASC, limit: 10) {
+    total
+    results {
+      id
+      name {
+        en_US
+      }
+    }
+  }
+}
+```
+
+#### 6. Sort products by price
+
+```graphql
+query {
+  products(sortBy: PRICE, sortOrder: DESC, limit: 10) {
+    total
+    results {
+      id
+      name {
+        en_US
+      }
+      masterVariant {
+        prices {
+          value {
+            centAmount
+            amount
+          }
+        }
       }
     }
   }
