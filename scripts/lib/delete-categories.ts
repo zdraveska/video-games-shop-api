@@ -1,7 +1,10 @@
-import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { Category } from "@commercetools/platform-sdk";
-import { fetchAllCategories } from "./utils.js";
+
+import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { APIError } from "../../src/errors/api-error.js";
+
+import { fetchAllCategories } from "./utils.js";
+
 
 // Delete a single category
 async function deleteCategory(cat: Category) {

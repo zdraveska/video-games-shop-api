@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { ctClient, projectKey } from "../../src/clients/ct-client.js";
+
 import { Category } from "@commercetools/platform-sdk";
+
+import { ctClient, projectKey } from "../../src/clients/ct-client.js";
 import { APIError } from "../../src/errors/api-error.js";
 
 const categoriesPath = path.resolve("scripts/data/categories.json");

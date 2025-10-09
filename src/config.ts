@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+
 import { APIError } from "./errors/api-error.js";
 
 dotenv.config();
