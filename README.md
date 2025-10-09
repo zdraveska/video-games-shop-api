@@ -136,6 +136,8 @@ The GraphQL API will be available at `http://localhost:4000/graphql`
 │   ├── errors
 │   │   └── api-error.ts
 │   ├── graphql
+│   │   ├── __tests__
+│   │   │   ├── resolvers.test.ts
 │   │   ├── resolvers.ts
 │   │   ├── schema.ts
 │   │   └── server.ts
@@ -145,6 +147,7 @@ The GraphQL API will be available at `http://localhost:4000/graphql`
 ├── .env.example
 ├── .gitignore
 ├── eslint.config.js
+├── jest.config.js
 ├── package-lock.json
 ├── package.json
 ```
