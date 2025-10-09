@@ -1,3 +1,4 @@
+import { Money } from "@commercetools/platform-sdk";
 import { ctClient, projectKey } from "../clients/ct-client.js";
 import { APIError } from "../errors/api-error.js";
 
@@ -59,9 +60,17 @@ export const resolvers = {
           if (categoryResponse.body.results.length > 0) {
             const categoryId = categoryResponse.body.results[0].id;
             filterQueries.push(`categories.id:"${categoryId}"`);
+          } else {
+            return {
+              results: [],
+              total: 0,
+              offset: args.offset || 0,
+              limit: args.limit || 20,
+            };
           }
         } catch (error) {
           console.error("Error fetching category:", error);
+          throw new APIError("There was an error fetching categories");
         }
       }
 
@@ -109,7 +118,7 @@ export const resolvers = {
         console.error("Error message:", error.message);
         console.error("Error body:", JSON.stringify(error.body, null, 2));
         console.error("Status code:", error.statusCode);
-        throw new Error("Failed to fetch products");
+        throw new APIError("Failed to fetch products", error.statusCode);
       }
     },
   },
@@ -158,11 +167,7 @@ export const resolvers = {
               },
             };
           } catch (error) {
-            console.warn(`Failed to fetch category ${catRef?.id}:`, error);
-            return {
-              id: catRef?.id ?? null,
-              name: { en_US: null },
-            };
+            return { id: catRef.id, name: { en_US: null } };
           }
         })
       );
@@ -187,6 +192,6 @@ export const resolvers = {
   },
 
   Money: {
-    fractionDigits: () => 2, // USD has 2 fraction digits
+    amount: (parent: Money) => parent.centAmount / 100,
   },
 };

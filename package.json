@@ -8,6 +8,7 @@
     "dev": "node --loader ts-node/esm --watch src/graphql/server.ts",
     "start": "node --loader ts-node/esm src/graphql/server.ts",
     "setup": "node --loader ts-node/esm scripts/setup-script.ts",
+    "test": "jest",
     "lint": "eslint src scripts --ext .ts,.js",
     "lint:fix": "eslint src scripts --ext .ts,.js --fix"
   },
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",

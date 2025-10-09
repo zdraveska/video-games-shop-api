@@ -56,7 +56,7 @@ export const typeDefs = `#graphql
   type Money {
     currencyCode: String!
     centAmount: Int!
-    fractionDigits: Int!
+    amount: Float!
   }
 
   type Image {
