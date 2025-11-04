@@ -6,13 +6,15 @@ import { importCategories } from "./lib/import-categories.js";
 import { importProductsType } from "./lib/import-products-type.js";
 import { importProducts } from "./lib/import-products.js";
 import { deleteAllProductTypes } from "./lib/delete-product-types.js";
+import { deleteAllOrders } from "./lib/delete-orders.js";
 
 async function main() {
   console.log("Starting full setup. of categories and products..\n");
 
   try {
     // Step 0: Cleanup existing data
-    console.log("Cleanup: Deleting existing products and categories...");
+    console.log("Cleanup: Deleting existing data...");
+    await deleteAllOrders({ confirm: true });
     await deleteAllProducts({ confirm: true });
     await deleteAllProductTypes({ confirm: true });
     await deleteAllCategories({ confirm: true });
