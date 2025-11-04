@@ -1,5 +1,7 @@
 export const typeDefs = `#graphql
   type Query {
+    health: String!
+    cart: Cart
     product(id: ID!): Product
     products(
       limit: Int
@@ -9,6 +11,20 @@ export const typeDefs = `#graphql
       sortBy: SortField
       sortOrder: SortOrder
     ): ProductConnection!
+    orders: [Order!]!
+    order(id: ID, orderNumber: String): Order
+}
+
+  type Mutation {
+    addToCart(productId: ID!, quantity: Int!): Cart!
+    removeFromCart(productId: ID!): Cart!
+   placeOrder(
+      shippingAddress: AddressInput!,
+      customerEmail: String!,
+      billingAddress: AddressInput
+    ): Order!
+    removeOrder(id: ID, orderNumber: String): Boolean!
+    removeAllOrders: Boolean!
   }
 
   type ProductConnection {
@@ -56,7 +72,7 @@ export const typeDefs = `#graphql
   type Money {
     currencyCode: String!
     centAmount: Int!
-    amount: Float!
+    amount: Float
   }
 
   type Image {
@@ -94,5 +110,54 @@ export const typeDefs = `#graphql
   enum SortOrder {
     ASC
     DESC
+  }
+
+  type Cart {
+    id: ID!
+    items: [CartItem!]!
+    totalAmount: Money!
+  }
+
+  type CartItem {
+    product: Product!
+    quantity: Int!
+    price: Money!
+  }
+
+  "Address input for mutations"
+  input AddressInput {
+    firstName: String!
+    lastName: String!
+    streetName: String!
+    streetNumber: String!
+    postalCode: String!
+    city: String!
+    state: String
+    country: String!
+    phone: String
+  }
+
+  "Address output for orders"
+  type AddressOutput {
+    firstName: String
+    lastName: String
+    streetName: String
+    streetNumber: String
+    postalCode: String
+    city: String
+    state: String
+    country: String
+    phone: String
+  }
+
+  type Order {
+    id: ID!
+    orderNumber: String
+    createdAt: String!
+    items: [CartItem!]!
+    totalAmount: Money!
+    shippingAddress: AddressOutput!
+    billingAddress: AddressOutput!
+    customerEmail: String!
   }
 `;

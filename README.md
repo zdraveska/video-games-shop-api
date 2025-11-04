@@ -8,8 +8,11 @@ Video game e-shop app for searching and filtering video games. GraphQL API built
 - **Multi-level categorization** - Platform → Console/Category → Genre
 - **Flexible sorting** - Sort by name or price (ascending/descending)
 - **Category filtering** - Filter products by genre or platform
-- **GraphQL API** - Data fetching
+- **Shopping cart management** - Add/remove products to cart
+- **Order placement** - Create orders from the current cart (shopping list)
+- **GraphQL API** - Type-safe data fetching with Apollo Server
 - **Commercetools integration** - Enterprise-grade commerce platform
+- **Comprehensive test coverage** - Unit tests for all resolvers
 
 ## Tech Stack
 
@@ -74,7 +77,7 @@ This will:
 - Set up product types with attributes (edition, platform, publisher, etc.)
 - Import video game products with all details
 
-⚠️ Note: The setup script deletes all existing categories, product types, and products before importing new ones.
+⚠️ Note: The setup script deletes all existing orders, categories, product types, and products before importing new ones.
 Do not run it if you've already added custom data to your Commercetools project.
 
 ### 5. Linting and Code Style
@@ -122,6 +125,7 @@ The GraphQL API will be available at `http://localhost:4000/graphql`
 │   │   └── products.json
 │   ├── lib
 │   │   ├── delete-categories.ts
+│   │   ├── delete-orders.ts
 │   │   ├── delete-product-types.ts
 │   │   ├── delete-products.ts
 │   │   ├── import-categories.ts
@@ -131,16 +135,32 @@ The GraphQL API will be available at `http://localhost:4000/graphql`
 │   └── setup-script.ts
 ├── src
 │   ├── clients
-│   │   └── ct-client.ts
-│   ├── config.ts
+│   │   ├── ct-auth.ts         # OAuth token management
+│   │   └── ct-client.ts       # Commercetools client setup
+│   ├── config.ts               # Environment configuration
 │   ├── errors
-│   │   └── api-error.ts
+│   │   └── api-error.ts       # Custom error handling
 │   ├── graphql
-│   │   ├── __tests__
-│   │   │   ├── resolvers.test.ts
-│   │   ├── resolvers.ts
-│   │   ├── schema.ts
-│   │   └── server.ts
+│   │   ├── __tests__          # Resolver tests
+│   │   │   ├── cart-resolvers.test.ts
+│   │   │   ├── order-resolvers.test.ts
+│   │   │   ├── product-resolvers.test.ts
+│   │   │   └── resolvers-index.test.ts
+│   │   ├── helpers            # Utility functions
+│   │   │   ├── cart-helper.ts
+│   │   │   ├── money-helper.ts
+│   │   │   └── products-helper.ts
+│   │   ├── resolvers          # GraphQL resolvers (thin layer)
+│   │   │   ├── cart-resolvers.ts
+│   │   │   ├── index.ts
+│   │   │   ├── order-resolvers.ts
+│   │   │   └── product-resolvers.ts
+│   │   ├── services           # Business logic layer
+│   │   │   ├── cart-service.ts
+│   │   │   ├── order-service.ts
+│   │   │   └── product-service.ts
+│   │   ├── schema.ts          # GraphQL type definitions
+│   │   └── server.ts          # Apollo Server setup
 │   └── types.ts
 ├── tsconfig.json
 ├── .env
@@ -149,8 +169,17 @@ The GraphQL API will be available at `http://localhost:4000/graphql`
 ├── eslint.config.js
 ├── jest.config.js
 ├── package-lock.json
-├── package.json
+└── package.json
 ```
+
+### Architecture
+
+The project follows a clean layered architecture:
+
+- **Resolvers** - Thin GraphQL layer that delegates to services
+- **Services** - Business logic for products, cart, and orders
+- **Helpers** - Utility functions called by services
+- **Clients** - Commercetools API integration
 
 ## Configuration
 
@@ -345,3 +374,231 @@ query {
   }
 }
 ```
+
+### Cart Operations
+
+#### 7. Get current cart
+
+```graphql
+query {
+  cart {
+    id
+    items {
+      product {
+        id
+        name {
+          en_US
+        }
+      }
+      quantity
+      price {
+        centAmount
+        currencyCode
+        amount
+      }
+    }
+    totalAmount {
+      centAmount
+      currencyCode
+      amount
+    }
+  }
+}
+```
+
+#### 8. Add product to cart
+
+```graphql
+mutation {
+  addToCart(productId: "your-product-id", quantity: 2) {
+    id
+    items {
+      product {
+        id
+        name {
+          en_US
+        }
+      }
+      quantity
+      price {
+        centAmount
+        amount
+      }
+    }
+    totalAmount {
+      centAmount
+      amount
+    }
+  }
+}
+```
+
+#### 9. Remove product from cart
+
+```graphql
+mutation {
+  removeFromCart(productId: "your-product-id") {
+    id
+    items {
+      product {
+        id
+        name {
+          en_US
+        }
+      }
+      quantity
+    }
+    totalAmount {
+      centAmount
+      amount
+    }
+  }
+}
+```
+
+### Order Operations
+
+#### 10. Get all orders
+
+```graphql
+query {
+  orders {
+    id
+    orderNumber
+    createdAt
+    items {
+      product {
+        id
+        name {
+          en_US
+        }
+      }
+      quantity
+      price {
+        centAmount
+        amount
+      }
+    }
+    totalAmount {
+      centAmount
+      amount
+    }
+  }
+}
+```
+
+#### 11. Get order by ID or order number
+
+```graphql
+query {
+  order(orderNumber: "ORD-123456") {
+    id
+    orderNumber
+    createdAt
+    items {
+      product {
+        id
+        name {
+          en_US
+        }
+      }
+      quantity
+      price {
+        centAmount
+        amount
+      }
+    }
+    totalAmount {
+      centAmount
+      amount
+    }
+    shippingAddress {
+      firstName
+      lastName
+      streetName
+      city
+      postalCode
+      country
+    }
+    customerEmail
+  }
+}
+```
+
+#### 12. Place order
+
+```graphql
+mutation {
+  placeOrder(
+    customerEmail: "customer@example.com"
+    shippingAddress: {
+      firstName: "John"
+      lastName: "Doe"
+      streetName: "Main St"
+      streetNumber: "123"
+      city: "New York"
+      postalCode: "10001"
+      country: "US"
+    }
+  ) {
+    id
+    orderNumber
+    createdAt
+    items {
+      product {
+        name {
+          en_US
+        }
+      }
+      quantity
+      price {
+        centAmount
+        amount
+      }
+    }
+    totalAmount {
+      centAmount
+      amount
+    }
+    shippingAddress {
+      firstName
+      lastName
+      city
+    }
+    customerEmail
+  }
+}
+```
+
+## Testing
+
+The project includes comprehensive unit tests for all resolvers.
+
+### Run all tests
+
+```bash
+npm test
+```
+
+### Run tests with coverage
+
+```bash
+npm test -- --coverage
+```
+
+### Run tests in watch mode
+
+```bash
+npm test -- --watch
+```
+
+### Test Structure
+
+Tests are organized by resolver type:
+
+- `product-resolvers.test.ts` - Product queries and field resolvers
+- `cart-resolvers.test.ts` - Cart query and mutations
+- `order-resolvers.test.ts` - Order queries and mutations
+- `resolvers-index.test.ts` - Main resolver composition
+
+All tests use mocked services to ensure isolated unit testing.

@@ -6,8 +6,7 @@ import { PORT } from "../config.js";
 import { APIError } from "../errors/api-error.js";
 
 import { typeDefs } from "./schema.js";
-import { resolvers } from "./resolvers.js";
-
+import { resolvers } from "./resolvers/index.js";
 
 const server = new ApolloServer({
   typeDefs,
