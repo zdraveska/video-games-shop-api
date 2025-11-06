@@ -1,6 +1,10 @@
 import { ctClient, projectKey } from "../../clients/ct-client.js";
 import { APIError } from "../../errors/api-error.js";
-import { Product } from "../helpers/products-helper.js";
+import {
+  filterProductsBySearch,
+  Product,
+  sortProductsByPrice,
+} from "../helpers/products-helper.js";
 import { toFormattedMoney } from "../helpers/money-helper.js";
 
 interface ProductFilters {
@@ -8,6 +12,7 @@ interface ProductFilters {
   offset?: number;
   search?: string;
   categoryKey?: string;
+  platformKey?: string;
   sortBy?: "NAME" | "PRICE";
   sortOrder?: "ASC" | "DESC";
 }
@@ -97,6 +102,16 @@ export class ProductService {
         }
       }
 
+      if (filters.platformKey) {
+        const platformId = await this.getPlatformIdByKey(filters.platformKey);
+        if (platformId) {
+          // Use Commercetools subtree filter to get all products in platform and its child categories
+          filterQueries.push(`categories.id:subtree("${platformId}")`);
+        } else {
+          return { total: 0, offset, limit, results: [] };
+        }
+      }
+
       if (filterQueries.length > 0) {
         queryParams.push(
           `filter=${encodeURIComponent(filterQueries.join(" and "))}`
@@ -139,11 +154,11 @@ export class ProductService {
       );
 
       if (filters.search) {
-        products = this.filterProductsBySearch(products, filters.search);
+        products = filterProductsBySearch(products, filters.search);
       }
 
       if (filters.sortBy === "PRICE") {
-        products = this.sortProductsByPrice(products, filters.sortOrder);
+        products = sortProductsByPrice(products, filters.sortOrder);
       }
 
       return {
@@ -175,22 +190,18 @@ export class ProductService {
     return null;
   }
 
-  private filterProductsBySearch(products: any[], searchTerm: string) {
-    const searchLower = searchTerm.toLowerCase();
-    return products.filter(
-      (p: any) =>
-        p.name.en_US.toLowerCase().includes(searchLower) ||
-        p.description.en_US.toLowerCase().includes(searchLower)
-    );
-  }
-
-  private sortProductsByPrice(products: any[], sortOrder?: "ASC" | "DESC") {
-    const order = sortOrder === "DESC" ? -1 : 1;
-    return products.sort((a, b) => {
-      const priceA = a.masterVariant.prices?.[0]?.value?.amount || 0;
-      const priceB = b.masterVariant.prices?.[0]?.value?.amount || 0;
-      return (priceA - priceB) * order;
+  private async getPlatformIdByKey(
+    platformKey: string
+  ): Promise<string | null> {
+    const platformRes = await ctClient.execute({
+      method: "GET",
+      uri: `/${projectKey}/categories?where=key="${platformKey}"`,
     });
+
+    if (platformRes.body.results.length > 0) {
+      return platformRes.body.results[0].id;
+    }
+    return null;
   }
 }
 
