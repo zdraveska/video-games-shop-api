@@ -599,6 +599,5 @@ Tests are organized by resolver type:
 - `product-resolvers.test.ts` - Product queries and field resolvers
 - `cart-resolvers.test.ts` - Cart query and mutations
 - `order-resolvers.test.ts` - Order queries and mutations
-- `resolvers-index.test.ts` - Main resolver composition
 
 All tests use mocked services to ensure isolated unit testing.

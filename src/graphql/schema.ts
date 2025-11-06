@@ -8,6 +8,7 @@ export const typeDefs = `#graphql
       offset: Int
       search: String
       categoryKey: String
+      platformKey: String
       sortBy: SortField
       sortOrder: SortOrder
     ): ProductConnection!

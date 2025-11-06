@@ -5,6 +5,7 @@ interface QueryProductsArgs {
   offset?: number;
   search?: string;
   categoryKey?: string;
+  platformKey?: string;
   sortBy?: "NAME" | "PRICE";
   sortOrder?: "ASC" | "DESC";
 }
